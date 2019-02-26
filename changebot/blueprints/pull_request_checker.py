@@ -124,7 +124,9 @@ def process_changelog_consistency(repository, number, installation):
 
     else:
         # Run checks
-        issues = check_changelog_consistency(repo_handler, pr_handler)
+        check_milestone = repo_handler.get_config_value('check_milestone', True)
+        issues = check_changelog_consistency(repo_handler, pr_handler,
+                                             check_milestone=check_milestone)
 
         if len(issues) > 0:
 

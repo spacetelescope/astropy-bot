@@ -49,7 +49,7 @@ def find_prs_in_changelog_by_section(content):
     return changelog_prs
 
 
-def check_changelog_consistency(repo_handler, pr_handler):
+def check_changelog_consistency(repo_handler, pr_handler, check_milestone=True):
 
     for filename in ('CHANGES.rst', 'CHANGES', 'CHANGES.md', 'CHANGELOG.rst'):
         try:
@@ -61,15 +61,18 @@ def check_changelog_consistency(repo_handler, pr_handler):
     else:
         return ["This repository does not appear to have a change log!"]
 
-    return review_changelog(pr_handler.number, changelog,
-                            pr_handler.milestone, pr_handler.labels)
+    milestone = pr_handler.milestone if check_milestone else None
+
+    return review_changelog(pr_handler.number, changelog, milestone,
+                            pr_handler.labels, check_milestone=check_milestone)
 
 
-def review_changelog(pull_request, changelog, milestone, labels):
+def review_changelog(pull_request, changelog, milestone, labels,
+                     check_milestone=True):
 
     issues = []
 
-    if not milestone:
+    if check_milestone and not milestone:
         issues.append("The milestone has not been set (this can only be set by a maintainer)")
 
     sections = find_prs_in_changelog_by_section(changelog)
