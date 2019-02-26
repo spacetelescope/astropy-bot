@@ -34,29 +34,17 @@ class TestRepoHandler:
         assert self.repo._headers is None
 
 
-# NOTE: Might hit API limit?
-class TestRealRepoHandler:
-    def setup_class(self):
-        # TODO: Use astropy/astropy-bot when #42 is merged.
-        self.repo = RepoHandler('pllim/astropy-bot', branch='changelog-onoff')
+@patch('changebot.github.github_api.RepoHandler.get_file_contents')
+def test_get_config(file_contents):
+    file_contents.return_value = """[tool.stsci-bot]
+changelog_check = false
+autoclose_stale_pull_request = false
+    """
+    repo = RepoHandler('fake/fakebot')
 
-    def test_get_config(self):
-        # These are set to False in YAML; defaults must not be used.
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter('always')
-            do_changelog_check = self.repo.get_config_value(
-                'changelog_check', True)
-            do_autoclose_pr = self.repo.get_config_value(
-                'autoclose_stale_pull_request', True)
-
-        hit_api_limit = False
-        if len(w) > 0:
-            hit_api_limit = True
-
-        if hit_api_limit:
-            pytest.xfail(str(w[-1].message))
-        else:
-            assert not (do_changelog_check or do_autoclose_pr)
+    assert repo.get_config_value('changelog_check', True) == False
+    assert repo.get_config_value('autoclose_stale_pull_request', True) == False
+    assert repo.get_config_value('bizbaz', 42) == 42
 
 
 class TestIssueHandler:
