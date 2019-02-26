@@ -1,4 +1,3 @@
-import warnings
 from unittest.mock import patch, Mock, PropertyMock
 
 import pytest
@@ -42,8 +41,8 @@ autoclose_stale_pull_request = false
     """
     repo = RepoHandler('fake/fakebot')
 
-    assert repo.get_config_value('changelog_check', True) == False
-    assert repo.get_config_value('autoclose_stale_pull_request', True) == False
+    assert repo.get_config_value('changelog_check', True) is False
+    assert repo.get_config_value('autoclose_stale_pull_request', True) is False
     assert repo.get_config_value('bizbaz', 42) == 42
 
 
