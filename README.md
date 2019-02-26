@@ -184,9 +184,9 @@ The main logic is defined in
 If ``CHANGES.rst``, ``CHANGES``, or ``CHANGES.md`` file does not exist in the
 repository, bot will not comment at all.
 
-For repositories that do not use a changelog, this checker can be disabled
-by defining ``changelog_check: false`` in ``.astropybot.yml`` at the top
-level of the repository.
+For repositories that do not use a changelog, this checker can be disabled by
+defining ``changelog_check: false`` in the ``[tool.stsci-bot]`` section of
+``pyproject.toml`` at the top level of the repository.
 
 ### Stale issue and pull request checkers
 
@@ -227,8 +227,8 @@ Heroku:
 
   For repositories that do not want to ever close stale pull requests,
   this feature can be permanently disabled by defining
-  ``autoclose_stale_pull_request: false`` in ``.astropybot.yml`` at the top
-  level of the repository.
+  ``autoclose_stale_pull_request: false`` in the ``[tool.stsci-bot]`` section
+  of ``pyproject.toml`` at the top level of the repository.
 
 * ``STALE_PULL_REQUEST_WARN_SECONDS``, which is the time in seconds from the
   last commit in order to be warned that it will be closed.

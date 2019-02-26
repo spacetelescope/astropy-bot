@@ -5,8 +5,8 @@ import requests
 import time
 import warnings
 
+import toml
 import dateutil.parser
-import yaml
 
 from changebot.github.github_auth import github_request_headers
 
@@ -107,7 +107,7 @@ class RepoHandler(object):
         contents_base64 = response.json()['content']
         return base64.b64decode(contents_base64).decode()
 
-    def get_user_config(self, path_to_file='.astropybot.yml',
+    def get_user_config(self, path_to_file='pyproject.toml', name='stsci-bot',
                         warn_on_failure=True):
         """
         Load user configuration for bot.
@@ -115,11 +115,11 @@ class RepoHandler(object):
         Parameters
         ----------
         path_to_file : str
-            Configuration file in YAML format in the repository.
+            Configuration file in TOML format in the repository.
             If not given or invalid, default is used.
 
         warn_on_failure : bool
-            Emit warning on failure to load YAML file.
+            Emit warning on failure to load TOML file.
 
         Returns
         -------
@@ -136,7 +136,9 @@ class RepoHandler(object):
             # Empty dict means calling code set the default
             cfg = {}
         else:
-            cfg = yaml.load(file_content)
+            content = toml.loads(file_content)
+            section = content.get('tool', {})
+            cfg = section.get(name, {})
 
         return cfg
 
